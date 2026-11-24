@@ -82,6 +82,15 @@ class Session:
     def ready(self):
         return bool(self.decisions) and self.reviewed == len(self.decisions) and not self.stopped
 
+    @property
+    def last_excluded_source_id(self):
+        return next((sid for sid in reversed(self.exclusion_history)
+                     if self.decisions.get(sid) == "Exclude"), None)
+
+    @property
+    def can_undo_exclusion(self):
+        return not self.stopped and self.last_excluded_source_id is not None
+
     def source(self, source_id):
         return next(s for s in self.case["sources"] if s["id"] == source_id)
 
@@ -92,6 +101,7 @@ class Session:
         self._working_case = copy.deepcopy(self.cases[case_id])
         self._working_case.pop("additional_sources", None)
         self.decisions = {s["id"]: None for s in self.case["sources"]}
+        self.exclusion_history = []
         self.search_query = ""
         self.question_submitted = False
         self.requested_question = ""
@@ -162,8 +172,23 @@ class Session:
         if source_id not in self.decisions or choice not in CHOICES:
             raise ValueError("Unknown source or choice")
         if self.decisions[source_id] != choice:
+            self.exclusion_history = [sid for sid in self.exclusion_history if sid != source_id]
+            if choice == "Exclude":
+                self.exclusion_history.append(source_id)
             self.decisions[source_id] = choice
             self.result = None
+
+    def undo_last_exclusion(self):
+        """Restore the latest still-excluded source without resetting other decisions."""
+        if self.stopped:
+            raise ValueError("Restart the case before undoing an exclusion")
+        source_id = self.last_excluded_source_id
+        if source_id is None:
+            raise ValueError("There are no excluded references to restore")
+        self.exclusion_history = [sid for sid in self.exclusion_history if sid != source_id]
+        self.decisions[source_id] = None
+        self.result = None
+        return source_id
 
     def selected(self):
         return [s for s in self.case["sources"] if self.decisions[s["id"]] == "Select"]
@@ -179,7 +204,7 @@ class Session:
         usable = [s for s in selected if s["kind"] == "relevant"]
         input_ids = [s["id"] for s in selected]
         if not usable:
-            result = {"status": "insufficient", "heading": "Insufficient evidence - no answer", "message": "The selected fictional passages do not support this question. Review the sources, restart, choose another case, or stop.", "claims": []}
+            result = {"status": "insufficient", "heading": "Insufficient evidence - no answer", "message": "The selected fictional passages do not support this question. Review your references, undo an exclusion, or change your question.", "claims": []}
         else:
             conflict = len({s["direction"] for s in usable}) > 1
             result = {"status": "conflict" if conflict else "summary", "heading": "Conflicting evidence - no definitive conclusion" if conflict else "Limited fictional summary", "message": "The selected fictional pilots disagree. No overall effect is inferred." if conflict else "This summary describes only the selected fictional evidence. It establishes no clinical benefit.", "claims": [{"text":s["finding"], "source_id":s["id"], "quote":s["passage"], "limit":s["limit"]} for s in usable]}

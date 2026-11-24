@@ -1,0 +1,21 @@
+UPDATING THE PUBLIC REPOSITORY
+
+Repository: https://github.com/aksahaha/IIS_Assignment
+README: https://github.com/aksahaha/IIS_Assignment#readme
+
+Extract this ZIP, open the Reference_First folder, and upload its complete
+contents to the repository. Preserve web/, tests/, tools/, docs/ and output/.
+Do not upload only the loose Python files or only the ZIP itself if reviewers
+are expected to inspect and run the source directly from the repository.
+
+After uploading, check that these paths are visible in GitHub:
+  web/index.html
+  web/prototype.js
+  web/styles.css
+  tests/test_engine.py
+  tests/test_web.py
+  output/pdf/Reference_First_A2_Report.pdf
+  docs/development_evidence.md
+
+The report includes the repository and README links. Check that the public
+repository contains the complete source and the matching report PDF.

@@ -115,6 +115,8 @@ class PrototypeHandler(BaseHTTPRequestHandler):
             "question_submitted": state.question_submitted,
             "requested_question": state.requested_question,
             "retrieval_message": state.retrieval_message,
+            "can_undo_exclusion": state.can_undo_exclusion,
+            "last_excluded_source_id": state.last_excluded_source_id,
         })
 
     def do_HEAD(self):
@@ -201,6 +203,7 @@ class PrototypeHandler(BaseHTTPRequestHandler):
             "/api/references": {"query"},
             "/api/question": {"question"},
             "/api/new-question": set(),
+            "/api/undo-exclusion": set(),
         }
         if path not in fields:
             self._error(404, "That API endpoint does not exist.")
@@ -230,6 +233,8 @@ class PrototypeHandler(BaseHTTPRequestHandler):
                     state.ask_question(data["question"])
                 elif path == "/api/new-question":
                     state.change_case("diary")
+                elif path == "/api/undo-exclusion":
+                    state.undo_last_exclusion()
                 snapshot = self._snapshot(state)
         except ValueError as error:
             self._error(400, str(error))
