@@ -1,0 +1,5 @@
+Snapshot: rf-question-input-2026-11-24
+Product: Reference First question-input browser prototype
+This is a local source snapshot, not a published GitHub release.
+See README.md for commit/publication status.
+See MANIFEST.sha256 for the exact packaged file checksums.

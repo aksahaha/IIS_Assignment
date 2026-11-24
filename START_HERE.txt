@@ -1,0 +1,43 @@
+REFERENCE FIRST - INTERACTIVE PROTOTYPE
+
+1. Extract this entire ZIP into a folder. Do not run it from inside the ZIP.
+2. On Windows, double-click open_prototype.cmd.
+3. Keep the terminal window open while using the prototype in your browser.
+4. Press Ctrl+C in the terminal when you have finished.
+
+Requirements: Python 3.10 or newer and a modern web browser.
+No pip packages, account or API key are needed.
+The Windows launcher can also use the Python runtime bundled with Codex.
+
+On other systems, open a terminal in this folder and run:
+    python3 serve_prototype.py
+
+The browser normally opens at http://127.0.0.1:8765
+If that port is busy, run:
+    python serve_prototype.py --port 8766
+
+HOW TO TRY IT
+- Type a question, then choose Find references.
+- Example: Can a sleep diary help adults describe their sleep routine?
+- No references are shown until you submit a question.
+- Inspect the returned sources; for the example, Select D1, Exclude D2
+  and choose Not sure for D3.
+- Selected sources collect as one-line rows. Click a row to reopen it.
+- Excluded sources disappear from the list; Start again restores them.
+- After reviewing the sources, add more fictional references or generate.
+- Review any new references before generating the summary.
+- Click summary citations to inspect the exact original passages.
+- Change a selected-source decision to clear and regenerate the summary.
+- Change question or Start again resets the previous question and review.
+
+The question determines which fictional collection is retrieved. Supported
+topics are sleep diaries, calmness/wind-down exercises and wearable sleep
+scores. Unsupported questions return no references and guidance, rather
+than an unrelated collection or invented real publications.
+
+This is a local simulation using fictional documents and scripted summaries.
+It does not perform live web searches or call an AI model.
+Review choices are kept in memory while the local server runs.
+
+See README.md for status, technology, development evidence and AI assistance.
+VERSION.txt identifies the snapshot; MANIFEST.sha256 records file checksums.
